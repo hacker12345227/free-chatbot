@@ -21,3 +21,7 @@ async function sendMessage() {
     chat.innerHTML += `<p><b>Bot:</b> Fout bij laden.</p>`;
   }
 }
+
+document.getElementById("input").addEventListener("keypress", e => {
+  if (e.key === "Enter") sendMessage();
+});
