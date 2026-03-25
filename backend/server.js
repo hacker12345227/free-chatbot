@@ -18,7 +18,7 @@ app.post("/chat", async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${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}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
