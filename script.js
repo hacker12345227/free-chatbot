@@ -1,35 +1,33 @@
+// script.js
+
 async function sendMessage() {
   const input = document.getElementById("input");
   const chat = document.getElementById("chat");
 
-  const userMessage = input.value;
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
+
   chat.innerHTML += `<p><b>Jij:</b> ${userMessage}</p>`;
-
   input.value = "";
+  chat.scrollTop = chat.scrollHeight;
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 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"
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: "Je bent een directe chatbot. Je praat normaal, gebruikt soms scheldwoorden en bent niet overdreven braaf."
-        },
-        {
-          role: "user",
-          content: userMessage
-        }
-      ]
-    })
-  });
+  try {
+    const response = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage })
+    });
 
-  const data = await response.json();
-  const botMessage = data.choices[0].message.content;
+    const data = await response.json();
+    chat.innerHTML += `<p><b>Bot:</b> ${data.bot}</p>`;
+    chat.scrollTop = chat.scrollHeight;
 
-  chat.innerHTML += `<p><b>Bot:</b> ${botMessage}</p>`;
+  } catch (error) {
+    console.error("Fout bij versturen:", error);
+    chat.innerHTML += `<p><b>Bot:</b> Er is iets misgegaan bij het ophalen van een antwoord.</p>`;
+  }
 }
+
+document.getElementById("input").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") sendMessage();
+});
